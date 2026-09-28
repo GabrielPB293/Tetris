@@ -1,9 +1,5 @@
 import random
 import os
-import time
-from colorama import init, Fore, Style
-
-init(autoreset=True)
 
 LARGURA = 10
 ALTURA = 20
@@ -25,19 +21,23 @@ PECAS = {
           [1, 1, 1]],
 }
 
-CORES = {
-    "I": Fore.CYAN,
-    "O": Fore.YELLOW,
-    "T": Fore.MAGENTA,
-    "S": Fore.GREEN,
-    "Z": Fore.RED,
-    "J": Fore.BLUE,
-    "L": Fore.WHITE,
+SIMBOLOS = {
+    "I": "🟦",
+    "O": "🟨",
+    "T": "🟪",
+    "S": "🟩",
+    "Z": "🟥",
+    "J": "🟫",
+    "L": "🟧",
 }
 
 ARQUIVO_RANKING = "ranking_tetris.txt"
 
-# Variáveis globais do jogo
+
+def limpa_tela():
+    os.system("cls" if os.name == "nt" else "clear")
+
+
 tabuleiro = []
 peca = []
 tipo = ""
@@ -49,20 +49,18 @@ nome = ""
 
 def cria_tabuleiro():
     global tabuleiro
-    # o tabuleiro é uma matriz (lista de listas) com ALTURA linhas e LARGURA colunas
     tabuleiro = [[" " for _ in range(LARGURA)] for _ in range(ALTURA)]
 
 
 def nova_peca():
     global peca, tipo, pos_x, pos_y
     tipo = random.choice(list(PECAS.keys()))
-    peca = [linha[:] for linha in PECAS[tipo]]  # copia a matriz da peça sorteada
+    peca = [linha[:] for linha in PECAS[tipo]]
     pos_x = LARGURA // 2 - len(peca[0]) // 2
     pos_y = 0
 
 
 def gira_peca(forma):
-    # gira a matriz da peça em 90 graus
     return [list(linha) for linha in zip(*forma[::-1])]
 
 
@@ -85,7 +83,6 @@ def fixa_peca():
             if peca[i][j] == 1 and pos_y + i >= 0:
                 tabuleiro[pos_y + i][pos_x + j] = tipo
 
-
 def limpa_linhas():
     global tabuleiro, pontos
     linhas_completas = 0
@@ -105,9 +102,8 @@ def limpa_linhas():
 
 
 def mostra_tabuleiro():
-    os.system("cls")
+    limpa_tela()
 
-    # copia o tabuleiro e sobrepõe a peça atual, só para exibição
     tela = [linha[:] for linha in tabuleiro]
     for i in range(len(peca)):
         for j in range(len(peca[i])):
@@ -126,9 +122,9 @@ def mostra_tabuleiro():
         print("|", end="")
         for c in linha:
             if c == " ":
-                print("  ", end="")
+                print("⬛", end="")
             else:
-                print(f"{CORES.get(c, '')}[]{Style.RESET_ALL}", end="")
+                print(SIMBOLOS[c], end="")
         print("|")
     print("+" + "--" * LARGURA + "+")
 
@@ -139,7 +135,7 @@ def salva_pontuacao():
 
 
 def mostra_ranking():
-    os.system("cls")
+    limpa_tela()
     print("=" * 30)
     print("      RANKING - TETRIS")
     print("=" * 30)
@@ -189,7 +185,6 @@ def jogar():
             while pode_mover(peca, pos_x, pos_y + 1):
                 pos_y += 1
 
-        # gravidade: a peça desce 1 linha a cada jogada
         if pode_mover(peca, pos_x, pos_y + 1):
             pos_y += 1
         else:
@@ -197,7 +192,7 @@ def jogar():
             limpa_linhas()
             nova_peca()
             if not pode_mover(peca, pos_x, pos_y):
-                fim = True  # não coube mais peça: fim de jogo
+                fim = True  
 
     mostra_tabuleiro()
     print("\nFim de jogo! O tabuleiro encheu 😵")
@@ -208,7 +203,7 @@ def jogar():
 
 def menu():
     while True:
-        os.system("cls")
+        limpa_tela()
         print("=" * 30)
         print("      ***** TETRIS *****")
         print("=" * 30)
