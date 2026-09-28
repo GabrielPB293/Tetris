@@ -3,8 +3,8 @@ import os
 
 LARGURA = 10
 ALTURA = 20
+#Tamanho da tabela do jogo.
 
-# Cada peça é representada como uma matriz (lista de listas) de 0 e 1
 PECAS = {
     "I": [[1, 1, 1, 1]],
     "O": [[1, 1],
@@ -20,6 +20,7 @@ PECAS = {
     "L": [[0, 0, 1],
           [1, 1, 1]],
 }
+# Peças do Jogo.
 
 SIMBOLOS = {
     "I": "🟦",
@@ -50,7 +51,7 @@ nome = ""
 def cria_tabuleiro():
     global tabuleiro
     tabuleiro = [[" " for _ in range(LARGURA)] for _ in range(ALTURA)]
-
+#Cria uma tabela para o jogo.
 
 def nova_peca():
     global peca, tipo, pos_x, pos_y
@@ -58,11 +59,11 @@ def nova_peca():
     peca = [linha[:] for linha in PECAS[tipo]]
     pos_x = LARGURA // 2 - len(peca[0]) // 2
     pos_y = 0
-
+#Cria nova peça aleatória.
 
 def gira_peca(forma):
     return [list(linha) for linha in zip(*forma[::-1])]
-
+#Gira a peça.
 
 def pode_mover(forma, x, y):
     for i in range(len(forma)):
@@ -75,13 +76,14 @@ def pode_mover(forma, x, y):
                 if ny >= 0 and tabuleiro[ny][nx] != " ":
                     return False
     return True
-
+#Move a peça para a posição desejada.
 
 def fixa_peca():
     for i in range(len(peca)):
         for j in range(len(peca[i])):
             if peca[i][j] == 1 and pos_y + i >= 0:
                 tabuleiro[pos_y + i][pos_x + j] = tipo
+#Fixa a peça no tabuleiro.
 
 def limpa_linhas():
     global tabuleiro, pontos
@@ -99,7 +101,7 @@ def limpa_linhas():
 
     tabuleiro = nova_matriz
     pontos += linhas_completas * 100
-
+#Limpa as linhas quando deixar uma completa e adiciona pontos para o jogador.
 
 def mostra_tabuleiro():
     limpa_tela()
@@ -112,6 +114,7 @@ def mostra_tabuleiro():
                 x = pos_x + j
                 if 0 <= y < ALTURA and 0 <= x < LARGURA:
                     tela[y][x] = tipo
+#Mostra o tabuleiro no prompt.
 
     print("=" * 30)
     print("      ***** TETRIS *****")
@@ -127,12 +130,12 @@ def mostra_tabuleiro():
                 print(SIMBOLOS[c], end="")
         print("|")
     print("+" + "--" * LARGURA + "+")
-
+#Mostra os pontos do jogador e o tabuleiro do jogo.
 
 def salva_pontuacao():
     with open(ARQUIVO_RANKING, "a") as arq:
         arq.write(f"{nome};{pontos}\n")
-
+#Salva a pontuação do jogador no arquivo de ranking.
 
 def mostra_ranking():
     limpa_tela()
@@ -199,7 +202,7 @@ def jogar():
     print(f"Pontuação final: {pontos}")
     salva_pontuacao()
     input("Pressione Enter para voltar ao menu...")
-
+#Roda o jogo, recebendo os comandos do jogador e atualizando o tabuleiro até que o jogo termine.
 
 def menu():
     while True:
@@ -223,5 +226,5 @@ def menu():
             print("Opção inválida")
             input("Pressione Enter...")
 
-
+#Seleção de opções para jogar.
 menu()
